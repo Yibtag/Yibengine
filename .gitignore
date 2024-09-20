@@ -1,12 +1,21 @@
-CMakeLists.txt.user
-CMakeCache.txt
-CMakeFiles
-CMakeScripts
+# Visual studio
+.vs/
+
+# Binaries
+out/
+*.spv
+
+# Cmake specific files
+
+_deps
 Testing
 Makefile
+CMakeFiles
+CMakeScripts
+CMakeCache.txt
 cmake_install.cmake
+CTestTestfile.cmake
+CMakeLists.txt.user
 install_manifest.txt
 compile_commands.json
-CTestTestfile.cmake
-_deps
 CMakeUserPresets.json
