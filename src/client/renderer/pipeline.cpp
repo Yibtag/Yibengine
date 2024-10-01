@@ -45,6 +45,11 @@ namespace yib {
 	}
 
 
+	VkPipelineLayout Pipeline::GetPipelineLayout() const {
+		return this->pipeline_layout;
+	}
+
+
 	PipelineConfig Pipeline::CreateDefaultConfig(VkRenderPass render_pass) {
 		PipelineConfig config = {};
 
@@ -134,6 +139,14 @@ namespace yib {
 		config.dynamic_state_info.pDynamicStates = config.dynamic_states.data();
 		config.dynamic_state_info.flags = 0;
 
+		config.pipeline_layout_info = {};
+
+		config.pipeline_layout_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+		config.pipeline_layout_info.setLayoutCount = 0;
+		config.pipeline_layout_info.pSetLayouts = nullptr;
+		config.pipeline_layout_info.pushConstantRangeCount = 0;
+		config.pipeline_layout_info.pPushConstantRanges = nullptr;
+
 		config.render_pass = render_pass;
 
 		return config;
@@ -193,17 +206,9 @@ namespace yib {
 
 
 	bool Pipeline::CreatePipelineLayout() {
-		VkPipelineLayoutCreateInfo create_info = {};
-
-		create_info.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		create_info.setLayoutCount = 0;
-		create_info.pSetLayouts = nullptr;
-		create_info.pushConstantRangeCount = 0;
-		create_info.pPushConstantRanges = nullptr;
-
 		if (vkCreatePipelineLayout(
 			this->device.GetDevice(),
-			&create_info,
+			&this->config.pipeline_layout_info,
 			nullptr,
 			&this->pipeline_layout
 		) != VK_SUCCESS) {

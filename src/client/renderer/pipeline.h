@@ -19,6 +19,8 @@ namespace yib {
 		VkPipelineColorBlendStateCreateInfo color_blend_info;
 		VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
 		VkPipelineDynamicStateCreateInfo dynamic_state_info;
+		std::vector<VkPushConstantRange> push_constant_ranges;
+		VkPipelineLayoutCreateInfo pipeline_layout_info;
 
 		uint32_t subpass;
 		VkRenderPass render_pass;
@@ -39,6 +41,8 @@ namespace yib {
 
 		Pipeline(const Pipeline&) = delete;
 		Pipeline& operator=(const Pipeline&) = delete;
+
+		VkPipelineLayout GetPipelineLayout() const;
 
 		static PipelineConfig CreateDefaultConfig(VkRenderPass render_pass);
 		void BindCommandBuffer(VkCommandBuffer command_buffer) const;

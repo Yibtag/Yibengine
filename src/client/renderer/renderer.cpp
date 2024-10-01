@@ -46,6 +46,10 @@ namespace yib {
 		return this->frame_began;
 	}
 
+	VkExtent2D Renderer::GetExtent() const {
+		return this->swap_chain->GetExtent();
+	}
+
 	VkRenderPass Renderer::GetRenderPass() const {
 		return this->swap_chain->GetRenderPass();
 	}

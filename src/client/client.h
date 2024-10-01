@@ -2,8 +2,17 @@
 
 #include <string>
 #include <vector>
+#include <chrono>
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
+#include <vulkan/vulkan.h>
+
+#include "object.h"
 #include "renderer/model.h"
+#include "renderer/camera.h"
 #include "renderer/device.h"
 #include "renderer/window.h"
 #include "renderer/renderer.h"
@@ -27,7 +36,7 @@ namespace yib {
 		bool success;
 	private:
 		// TODO: Remove this
-		bool CreateModels();
+		bool CreateObjects();
 
 		bool running;
 		const std::string name;
@@ -39,6 +48,7 @@ namespace yib {
 		Renderer renderer;
 		RenderSystem render_system;
 
-		std::vector<std::shared_ptr<Model>> models;
+		// TODO: Remove this
+		std::vector<std::shared_ptr<Object>> objects;
 	};
 }

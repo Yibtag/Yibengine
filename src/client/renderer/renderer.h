@@ -27,6 +27,7 @@ namespace yib {
 		Renderer& operator=(const Renderer&) = delete;
 
 		bool HasFrameBegan() const;
+		VkExtent2D GetExtent() const;
 		VkRenderPass GetRenderPass() const;
 		VkCommandBuffer GetCurrentCommandBuffer();
 		std::optional<uint32_t> GetFrameIndex() const;

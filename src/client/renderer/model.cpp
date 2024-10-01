@@ -18,7 +18,7 @@ namespace yib {
 
 		attribute_descriptions.at(0).binding = 0;
 		attribute_descriptions.at(0).location = 0;
-		attribute_descriptions.at(0).format = VK_FORMAT_R32G32_SFLOAT;
+		attribute_descriptions.at(0).format = VK_FORMAT_R32G32B32_SFLOAT;
 		attribute_descriptions.at(0).offset = offsetof(Vertex, position);
 
 		attribute_descriptions.at(1).binding = 0;
