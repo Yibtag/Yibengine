@@ -12,13 +12,19 @@
 
 #include "object.h"
 #include "renderer/model.h"
+#include "renderer/buffer.h"
 #include "renderer/camera.h"
 #include "renderer/device.h"
 #include "renderer/window.h"
 #include "renderer/renderer.h"
+#include "renderer/descriptors.h"
 #include "renderer/render_system.h"
 
 namespace yib {
+	struct GlobalUBO {
+		glm::mat4 projection_view_matrix{ 1.0f };
+	};
+
 	class Client {
 	public:
 		Client(
@@ -37,6 +43,7 @@ namespace yib {
 	private:
 		// TODO: Remove this
 		bool CreateObjects();
+		bool CreateDescriptorPool();
 
 		bool running;
 		const std::string name;
@@ -46,7 +53,8 @@ namespace yib {
 		Window window;
 		Device device;
 		Renderer renderer;
-		RenderSystem render_system;
+
+		std::unique_ptr<DescriptorPool> descriptor_pool;
 
 		// TODO: Remove this
 		std::vector<std::shared_ptr<Object>> objects;

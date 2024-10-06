@@ -20,6 +20,7 @@ namespace yib {
 		VkPipelineDepthStencilStateCreateInfo depth_stencil_info;
 		VkPipelineDynamicStateCreateInfo dynamic_state_info;
 		std::vector<VkPushConstantRange> push_constant_ranges;
+		std::vector<VkDescriptorSetLayout> set_layouts;
 		VkPipelineLayoutCreateInfo pipeline_layout_info;
 
 		uint32_t subpass;

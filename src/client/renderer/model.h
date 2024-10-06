@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+#include <cstdint>
+
 #include <vulkan/vulkan.h>
 
 #define GLM_FORCE_RADIANS
@@ -7,6 +10,7 @@
 #include <glm/glm.hpp>
 
 #include "device.h"
+#include "buffer.h"
 
 namespace yib {
 	struct Vertex {
@@ -17,26 +21,33 @@ namespace yib {
 		static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
 	};
 
+	struct ModelData {
+		std::vector<Vertex> vertices = {};
+		std::vector<uint32_t> indices = {};
+	};
+
 	class Model {
 	public:
 		Model(
 			Device& device,
-			const std::vector<Vertex>& vertecies
+			ModelData data
 		);
-		~Model();
 
-		void Bind(VkCommandBuffer command_buffer);
+		void Bind(VkCommandBuffer command_buffer) const;
 		void Draw(VkCommandBuffer command_buffer) const;
 
 		bool success;
 	private:
-		bool CreateVertexBuffers(const std::vector<Vertex>& vertecies);
-		void DestoryVertexBuffers();
+		bool CreateVertexBuffers(const std::vector<Vertex>& vertices);
+		bool CreateIndexBuffers(const std::vector<uint32_t>& indices);
 
 		Device& device;
 
 		uint32_t vertex_count = 0;
-		VkBuffer vertex_buffer = VK_NULL_HANDLE;
-		VkDeviceMemory vertex_buffer_memory = VK_NULL_HANDLE;
+		std::unique_ptr<Buffer> vertex_buffer;
+
+		bool has_index_buffer = false;
+		uint32_t index_count = 0;
+		std::unique_ptr<Buffer> index_buffer;
 	};
 }

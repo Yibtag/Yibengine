@@ -12,20 +12,22 @@
 #include "camera.h"
 #include "device.h"
 #include "pipeline.h"
+#include "descriptors.h"
 #include "../object.h"
 
 namespace yib {
 	class RenderSystem {
 	public:
 		struct PushConstant {
-			glm::mat4 transform{ 1.0f };
+			glm::mat4 model_matrix{ 1.0f };
 		};
 
 		RenderSystem(
 			Device& device,
 			uint32_t width,
 			uint32_t height,
-			VkRenderPass render_pass
+			VkRenderPass render_pass,
+			VkDescriptorSetLayout set_layout
 		);
 
 		RenderSystem(const RenderSystem&) = delete;
@@ -34,12 +36,13 @@ namespace yib {
 		void RenderModels(
 			VkCommandBuffer command_buffer,
 			std::vector<std::shared_ptr<Object>> objects,
-			const Camera& camera
+			const Camera& camera,
+			VkDescriptorSet descriptor_set
 		);
 
 		bool success;
 	private:
-		PipelineConfig CreatePipelineConfig() const;
+		PipelineConfig CreatePipelineConfig(VkDescriptorSetLayout set_layout) const;
 
 		Device& device;
 		VkRenderPass render_pass;

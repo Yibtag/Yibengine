@@ -40,6 +40,7 @@ namespace yib {
 		VkQueue GetGraphicsQueue() const;
 		VkCommandPool GetCommandPool() const;
 		VkPhysicalDevice GetPhysicalDevice() const;
+		VkPhysicalDeviceProperties GetPhysicalDeviceProperties() const;
 
 		std::optional<uint32_t> FindMemoryType(
 			uint32_t type_filter,
@@ -63,6 +64,13 @@ namespace yib {
 			VkBuffer& buffer,
 			VkDeviceMemory& buffer_memory
 		);
+		bool CopyBuffer(
+			VkBuffer source,
+			VkBuffer destination,
+			VkDeviceSize size
+		);
+		VkCommandBuffer BeginSingleTimeCommands() const;
+		bool EndSingleTimeCommands(VkCommandBuffer command_buffer);
 		bool IsPhysicalDeviceSuitable(const VkPhysicalDevice& device);
 		bool SupportsRequiredExtentions(const VkPhysicalDevice& device);
 		QueueFamiliyIndices GetFamilyIndices(const VkPhysicalDevice& device) const;

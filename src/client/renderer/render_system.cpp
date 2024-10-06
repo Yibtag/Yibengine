@@ -5,7 +5,8 @@ namespace yib {
 		Device& device,
 		uint32_t width,
 		uint32_t height,
-		VkRenderPass render_pass
+		VkRenderPass render_pass,
+		VkDescriptorSetLayout set_layout
 	) :
 	device(device),
 	render_pass(render_pass),
@@ -15,7 +16,7 @@ namespace yib {
 		height,
 		"D:/documents/projects/Yibengine/src/client/shaders/simple.vert.spv",
 		"D:/documents/projects/Yibengine/src/client/shaders/simple.frag.spv",
-		CreatePipelineConfig()
+		CreatePipelineConfig(set_layout)
 	)),
 	success(false)
 	{
@@ -30,12 +31,21 @@ namespace yib {
 	void RenderSystem::RenderModels(
 		VkCommandBuffer command_buffer,
 		std::vector<std::shared_ptr<Object>> objects,
-		const Camera& camera
+		const Camera& camera,
+		VkDescriptorSet descriptor_set
 	) {
 		this->pipeline->BindCommandBuffer(command_buffer);
 
-		// TODO: Move the matrix multi to gpu once uniforms are supported
-		glm::mat4 projection_view = camera.GetProjectionMatrix() * camera.GetViewMatrix();
+		vkCmdBindDescriptorSets(
+			command_buffer,
+			VK_PIPELINE_BIND_POINT_GRAPHICS,
+			this->pipeline->GetPipelineLayout(),
+			0,
+			1,
+			&descriptor_set,
+			0,
+			nullptr
+		);
 
 		for (std::shared_ptr<Object> object : objects) {
 			object->transform.rotation.y = glm::mod(
@@ -48,9 +58,7 @@ namespace yib {
 			);
 
 			PushConstant push_constant = { };
-
-			// TODO: Move the matrix multi to gpu once uniforms are supported
-			push_constant.transform = projection_view * object->transform.GetMatrix();
+			push_constant.model_matrix = object->transform.GetMatrix();
 
 			vkCmdPushConstants(
 				command_buffer,
@@ -67,7 +75,7 @@ namespace yib {
 	}
 
 
-	PipelineConfig RenderSystem::CreatePipelineConfig() const {
+	PipelineConfig RenderSystem::CreatePipelineConfig(VkDescriptorSetLayout set_layout) const {
 		PipelineConfig config = Pipeline::CreateDefaultConfig(this->render_pass);
 
 		VkPushConstantRange push_constant_range = {};
@@ -82,6 +90,13 @@ namespace yib {
 
 		config.pipeline_layout_info.pushConstantRangeCount = config.push_constant_ranges.size();
 		config.pipeline_layout_info.pPushConstantRanges = config.push_constant_ranges.data();
+
+		config.set_layouts = {
+			set_layout
+		};
+
+		config.pipeline_layout_info.setLayoutCount = config.set_layouts.size();
+		config.pipeline_layout_info.pSetLayouts = config.set_layouts.data();
 
 		return config;
 	}

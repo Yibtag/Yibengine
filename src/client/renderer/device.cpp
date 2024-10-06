@@ -116,6 +116,13 @@ namespace yib {
 		return this->physical_device;
 	}
 
+	VkPhysicalDeviceProperties Device::GetPhysicalDeviceProperties() const {
+		VkPhysicalDeviceProperties propeties;
+		vkGetPhysicalDeviceProperties(this->physical_device, &propeties);
+
+		return propeties;
+	}
+
 
 	std::optional<uint32_t> Device::FindMemoryType(
 		uint32_t type_filter,
@@ -280,6 +287,100 @@ namespace yib {
 		) != VK_SUCCESS) {
 			return false;
 		}
+
+		return true;
+	}
+
+	bool Device::CopyBuffer(
+		VkBuffer source,
+		VkBuffer destination,
+		VkDeviceSize size
+	) {
+		VkCommandBuffer command_buffer = BeginSingleTimeCommands();
+		if (command_buffer == VK_NULL_HANDLE) {
+			return false;
+		}
+
+		VkBufferCopy copy_region = {};
+
+		copy_region.size = size;
+		copy_region.srcOffset = 0;
+		copy_region.dstOffset = 0;
+
+		vkCmdCopyBuffer(
+			command_buffer,
+			source,
+			destination,
+			1,
+			&copy_region
+		);
+
+		EndSingleTimeCommands(command_buffer);
+
+		return true;
+	}
+
+	VkCommandBuffer Device::BeginSingleTimeCommands() const {
+		VkCommandBufferAllocateInfo allocation_info = {};
+
+		allocation_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+		allocation_info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+		allocation_info.commandPool = this->command_pool;
+		allocation_info.commandBufferCount = 1;
+
+		VkCommandBuffer command_buffer;
+		if (vkAllocateCommandBuffers(
+			this->device,
+			&allocation_info,
+			&command_buffer
+		) != VK_SUCCESS) {
+			return VK_NULL_HANDLE;
+		}
+
+		VkCommandBufferBeginInfo begin_info = {};
+		begin_info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+		begin_info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+
+		if (vkBeginCommandBuffer(
+			command_buffer,
+			&begin_info
+		) != VK_SUCCESS) {
+			return VK_NULL_HANDLE;
+		}
+
+		return command_buffer;
+	}
+
+	bool Device::EndSingleTimeCommands(VkCommandBuffer command_buffer) {
+		if (vkEndCommandBuffer(command_buffer) != VK_SUCCESS) {
+			return false;
+		}
+
+		VkSubmitInfo submit_info = {};
+
+		submit_info.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+		submit_info.commandBufferCount = 1;
+		submit_info.pCommandBuffers = &command_buffer;
+
+		if (vkQueueSubmit(
+			this->graphics_queue,
+			1,
+			&submit_info,
+			VK_NULL_HANDLE
+		) != VK_SUCCESS) {
+			return false;
+		}
+
+		if (vkQueueWaitIdle(this->graphics_queue) != VK_SUCCESS) {
+			return false;
+		}
+
+		vkFreeCommandBuffers(
+			this->device,
+			this->command_pool,
+			1,
+			&command_buffer
+		);
 
 		return true;
 	}
