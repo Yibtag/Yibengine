@@ -63,7 +63,7 @@ namespace yib {
 			vkCmdPushConstants(
 				command_buffer,
 				this->pipeline->GetPipelineLayout(),
-				VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+				VK_SHADER_STAGE_VERTEX_BIT,
 				0,
 				sizeof(PushConstant),
 				&push_constant
@@ -80,7 +80,7 @@ namespace yib {
 
 		VkPushConstantRange push_constant_range = {};
 
-		push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+		push_constant_range.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
 		push_constant_range.offset = 0;
 		push_constant_range.size = sizeof(PushConstant);
 

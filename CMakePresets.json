@@ -1,8 +1,8 @@
-﻿{
+{
     "version": 3,
     "configurePresets": [
         {
-            "name": "windows-base",
+            "name": "windows-msvc-base",
             "hidden": true,
             "generator": "Ninja",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
@@ -18,9 +18,9 @@
             }
         },
         {
-            "name": "x64-debug",
-            "displayName": "x64 Debug",
-            "inherits": "windows-base",
+            "name": "windows-msvc-x64-debug",
+            "displayName": "Windows(MSVC) x64 Debug",
+            "inherits": "windows-msvc-base",
             "architecture": {
                 "value": "x64",
                 "strategy": "external"
@@ -30,17 +30,21 @@
             }
         },
         {
-            "name": "x64-release",
-            "displayName": "x64 Release",
-            "inherits": "x64-debug",
+            "name": "windows-msvc-x64-release",
+            "displayName": "Windows(MSVC) x64 Release",
+            "inherits": "windows-msvc-base",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
         },
         {
-            "name": "x86-debug",
-            "displayName": "x86 Debug",
-            "inherits": "windows-base",
+            "name": "windows-msvc-x86-debug",
+            "displayName": "Windows(MSVC) x86 Debug",
+            "inherits": "windows-msvc-base",
             "architecture": {
                 "value": "x86",
                 "strategy": "external"
@@ -50,9 +54,77 @@
             }
         },
         {
-            "name": "x86-release",
-            "displayName": "x86 Release",
-            "inherits": "x86-debug",
+            "name": "windows-msvc-x86-release",
+            "displayName": "Windows(MSVC) x86 Release",
+            "inherits": "windows-msvc-base",
+            "architecture": {
+                "value": "x86",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "windows-gcc-base",
+            "hidden": true,
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc.exe",
+                "CMAKE_CXX_COMPILER": "g++.exe"
+            },
+            "condition": {
+                "type": "equals",
+                "lhs": "${hostSystemName}",
+                "rhs": "Windows"
+            }
+        },
+        {
+            "name": "windows-gcc-x64-debug",
+            "displayName": "Windows(GCC) x64 Debug",
+            "inherits": "windows-gcc-base",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "windows-gcc-x64-release",
+            "displayName": "Windows(GCC) x64 Release",
+            "inherits": "windows-gcc-base",
+            "architecture": {
+                "value": "x64",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
+        },
+        {
+            "name": "windows-gcc-x86-debug",
+            "displayName": "Windows(GCC) x86 Debug",
+            "inherits": "windows-gcc-base",
+            "architecture": {
+                "value": "x86",
+                "strategy": "external"
+            },
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "windows-gcc-x86-release",
+            "displayName": "Windows(GCC) x86 Release",
+            "inherits": "windows-gcc-base",
+            "architecture": {
+                "value": "x86",
+                "strategy": "external"
+            },
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }

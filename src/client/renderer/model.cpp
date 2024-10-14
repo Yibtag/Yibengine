@@ -2,6 +2,9 @@
 
 #include <cstring>
 
+#define TINYOBJLOADER_IMPLEMENTATION
+#include "../../shared/tinyobj/tiny_obj_loader.h"
+
 namespace yib {
 	std::vector<VkVertexInputBindingDescription> Vertex::GetBindingDescription() {
 		std::vector<VkVertexInputBindingDescription> binding_descriptions(1);
@@ -24,9 +27,72 @@ namespace yib {
 		attribute_descriptions.at(1).binding = 0;
 		attribute_descriptions.at(1).location = 1;
 		attribute_descriptions.at(1).format = VK_FORMAT_R32G32B32_SFLOAT;
-		attribute_descriptions.at(1).offset = offsetof(Vertex, color);
+		attribute_descriptions.at(1).offset = offsetof(Vertex, normal);
+
+		attribute_descriptions.at(1).binding = 0;
+		attribute_descriptions.at(1).location = 2;
+		attribute_descriptions.at(1).format = VK_FORMAT_R32G32_SFLOAT;
+		attribute_descriptions.at(1).offset = offsetof(Vertex, uv);
 
 		return attribute_descriptions;
+	}
+
+
+	std::optional<ModelData> ModelData::LoadModel(const std::string& file) {
+		std::string warnning, error;
+
+		tinyobj::attrib_t attrib;
+		std::vector<tinyobj::shape_t> shapes;
+		std::vector<tinyobj::material_t> materials;
+		
+		if (!tinyobj::LoadObj(
+			&attrib,
+			&shapes,
+			&materials,
+			&warnning,
+			&error,
+			file.c_str()
+		)) {
+			return std::nullopt;
+		}
+
+		ModelData data = { };
+
+		data.vertices = { };
+		data.indices = { };
+
+		for (const tinyobj::shape_t& shape : shapes) {
+			for (const tinyobj::index_t& index : shape.mesh.indices) {
+				Vertex vertex = { };
+
+				if (index.vertex_index >= 0) {
+					vertex.position = {
+						attrib.vertices[3 * index.vertex_index + 0],
+						attrib.vertices[3 * index.vertex_index + 1],
+						attrib.vertices[3 * index.vertex_index + 2]
+					};
+				}
+
+				if (index.normal_index >= 0) {
+					vertex.normal = {
+						attrib.normals[3 * index.normal_index + 0],
+						attrib.normals[3 * index.normal_index + 1],
+						attrib.normals[3 * index.normal_index + 2]
+					};
+				}
+
+				if (index.texcoord_index >= 0) {
+					vertex.uv = {
+						attrib.texcoords[2 * index.texcoord_index + 0],
+						attrib.texcoords[2 * index.texcoord_index + 1]
+					};
+				}
+
+				data.vertices.push_back(vertex);
+			}
+		}
+
+		return data;
 	}
 
 
@@ -38,9 +104,7 @@ namespace yib {
 			return;
 		}
 
-		if (!CreateIndexBuffers(data.indices)) {
-			return;
-		}
+		CreateIndexBuffers(data.indices);
 
 		this->success = true;
 	}

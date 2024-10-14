@@ -1,13 +1,11 @@
 #version 450
 
-layout (push_constant) uniform PushContant {
-    mat4 model_matrix;
-} push_constant;
+layout (set = 0, binding = 1) uniform sampler2D image;
 
+layout (location = 0) in vec2 fragUV;
 
-layout (location = 0) in vec3 fragColor;
 layout (location = 0) out vec4 color;
 
 void main() {
-    color = vec4(fragColor, 1.0);
+    color = vec4(texture(image, fragUV).rgb, 1.0);
 }

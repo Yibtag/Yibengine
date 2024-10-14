@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <cstdint>
+#include <optional>
 
 #include <vulkan/vulkan.h>
 
@@ -15,7 +16,8 @@
 namespace yib {
 	struct Vertex {
 		glm::vec3 position;
-		glm::vec3 color;
+		glm::vec3 normal;
+		glm::vec2 uv;
 
 		static std::vector<VkVertexInputBindingDescription> GetBindingDescription();
 		static std::vector<VkVertexInputAttributeDescription> GetAttributeDescriptions();
@@ -24,6 +26,8 @@ namespace yib {
 	struct ModelData {
 		std::vector<Vertex> vertices = {};
 		std::vector<uint32_t> indices = {};
+
+		static std::optional<ModelData> LoadModel(const std::string& file);
 	};
 
 	class Model {

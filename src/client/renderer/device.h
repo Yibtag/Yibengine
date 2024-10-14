@@ -57,6 +57,13 @@ namespace yib {
 			VkDeviceMemory& image_memory,
 			VkImage& image
 		) const;
+		bool CopyBufferToImage(
+			VkBuffer buffer,
+			VkImage image,
+			uint32_t width,
+			uint32_t height,
+			uint32_t layer_ount
+		);
 		bool CreateBuffer(
 			VkDeviceSize size,
 			VkBufferUsageFlags usage,

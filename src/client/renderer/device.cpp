@@ -229,6 +229,48 @@ namespace yib {
 		return true;
 	}
 
+	bool Device::CopyBufferToImage(
+		VkBuffer buffer,
+		VkImage image,
+		uint32_t width,
+		uint32_t height,
+		uint32_t layer_count
+	) {
+		VkCommandBuffer command_buffer = BeginSingleTimeCommands();
+		if (command_buffer == VK_NULL_HANDLE) {
+			return false;
+		}
+
+		VkBufferImageCopy region{};
+
+		region.bufferOffset = 0;
+		region.bufferRowLength = 0;
+		region.bufferImageHeight = 0;
+
+		region.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+		region.imageSubresource.mipLevel = 0;
+		region.imageSubresource.baseArrayLayer = 0;
+		region.imageSubresource.layerCount = layer_count;
+
+		region.imageOffset = { 0, 0, 0 };
+		region.imageExtent = { width, height, 1 };
+
+		vkCmdCopyBufferToImage(
+			command_buffer,
+			buffer,
+			image,
+			VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+			1,
+			&region
+		);
+
+		if (!EndSingleTimeCommands(command_buffer)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	bool Device::CreateBuffer(
 		VkDeviceSize size,
 		VkBufferUsageFlags usage,

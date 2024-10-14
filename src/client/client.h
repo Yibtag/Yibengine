@@ -16,6 +16,7 @@
 #include "renderer/camera.h"
 #include "renderer/device.h"
 #include "renderer/window.h"
+#include "renderer/texture.h"
 #include "renderer/renderer.h"
 #include "renderer/descriptors.h"
 #include "renderer/render_system.h"

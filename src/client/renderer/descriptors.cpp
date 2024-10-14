@@ -182,7 +182,7 @@ namespace yib {
 			return false;
 		}
 
-		VkDescriptorSetLayoutBinding& binding_description = this->set_layout.bindings[binding];
+		VkDescriptorSetLayoutBinding& binding_description = this->set_layout.bindings.at(binding);
 
 		if (binding_description.descriptorCount != 1) {
 			return false;
@@ -209,7 +209,7 @@ namespace yib {
 			return false;
 		}
 
-		VkDescriptorSetLayoutBinding& binding_description = this->set_layout.bindings[binding];
+		VkDescriptorSetLayoutBinding& binding_description = this->set_layout.bindings.at(binding);
 
 		if (binding_description.descriptorCount != 1) {
 			return false;
