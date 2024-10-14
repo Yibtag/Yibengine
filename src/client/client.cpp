@@ -55,7 +55,7 @@ namespace yib {
 	void Client::Run() {
 		Texture texture = Texture(
 			this->device,
-			"C:\\Users\\yibta\\OneDrive\\Namizje\\icon.png"
+			"icon.png"
 		);
 		if (!texture.success) {
 			this->running = false;
@@ -197,7 +197,7 @@ namespace yib {
 
 	// TODO: Remove this
 	bool Client::CreateObjects() {
-		std::optional<ModelData> data = ModelData::LoadModel("C:\\Users\\yibta\\OneDrive\\Namizje\\suzanne.obj");
+		std::optional<ModelData> data = ModelData::LoadModel("suzanne.obj");
 		if (!data.has_value()) {
 			return false;
 		}
